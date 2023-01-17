@@ -79,7 +79,8 @@ export = (injectedStore: typeof StoreType) => {
             const newAuth: IAuth = {
                 id: result.insertId,
                 user: user.user,
-                prov: 1
+                prov: 1,
+                admin_id: result.insertId
             }
             return await AuthController.upsert(newAuth, body.email);
         }
@@ -88,9 +89,7 @@ export = (injectedStore: typeof StoreType) => {
     const remove = async (idUser: number) => {
         await store.remove(Tables.ADMIN, { id: idUser })
             .then(async (result: any) => {
-                if (result.affectedRows > 0) {
-                    await store.remove(Tables.AUTH_ADMIN, { id: idUser })
-                } else {
+                if (result.affectedRows === 0) {
                     throw new Error();
                 }
             })

@@ -2,7 +2,8 @@ export interface IAuth {
     id?: number,
     user: string,
     pass?: string,
-    prov: number
+    prov: number,
+    admin_id: number
 }
 export interface IUser {
     id?: number,

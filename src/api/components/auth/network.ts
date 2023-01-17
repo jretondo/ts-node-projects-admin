@@ -25,7 +25,8 @@ const changePass = (
         id: req.body.user.id,
         pass: req.body.password,
         prov: 0,
-        user: req.body.user.user
+        user: req.body.user.user,
+        admin_id: req.body.user.id
     }, "")
         .then(data => {
             success({ res, req, message: data })

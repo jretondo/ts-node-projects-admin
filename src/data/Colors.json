@@ -6,13 +6,13 @@
     "danger": "#f5365c",
     "ligth": "#adb5bd",
     "dark": "#212529",
-    "primary": "#0081c9",
-    "secondary": "#0081c9",
+    "primary": "#f5dc84",
+    "secondary": "#232d91",
     "paragraph": "#0a0a0a",
     "fontBg": "#fff",
     "tittle": "#7cc142",
     "backgroundCont": "#fff",
-    "background": "#fff",
+    "background": "#212529",
     "ligthBg": "#c3b4e8",
     "textBg": "#fff"
   }

@@ -15,7 +15,8 @@ export = (injectedStore: typeof StoreType) => {
             newAuth = {
                 user: body.user,
                 prov: body.prov,
-                pass: await bcrypt.hash(body.pass, 5)
+                pass: await bcrypt.hash(body.pass, 5),
+                admin_id: body.admin_id
             };
             if (body.prov === 1) {
                 const result = await store.update(Tables.AUTH_ADMIN, newAuth, Number(body.id));
@@ -33,7 +34,8 @@ export = (injectedStore: typeof StoreType) => {
                 id: body.id,
                 user: body.user,
                 prov: 1,
-                pass: await bcrypt.hash(newPass, 5)
+                pass: await bcrypt.hash(newPass, 5),
+                admin_id: body.id || 0
             };
             const result = await store.insert(Tables.AUTH_ADMIN, newAuth);
             if (result.affectedRows > 0) {
@@ -53,7 +55,8 @@ export = (injectedStore: typeof StoreType) => {
             id: idUsu,
             user: user,
             prov: 1,
-            pass: newPass
+            pass: newPass,
+            admin_id: idUsu
         };
 
         return await upsert(data, email);

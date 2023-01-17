@@ -1,7 +1,7 @@
 {
-  "name": "muni-la-calera-monotr-ts",
+  "name": "projects-administrator-backend",
   "version": "1.0.0",
-  "description": "Backend system for La Calera Cityhall, made in TS and Node-Express. This app management providers payment",
+  "description": "Herramienta back ideal para la administración de empresas",
   "main": "dist/api/index.js",
   "scripts": {
     "test": "concurrently \"tsc -w\" \"nodemon dist/api/index.js\"",
