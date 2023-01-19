@@ -58,10 +58,10 @@ enum InvoiceItems {
 
 enum SalePoints {
     id = "id",
-    cuit = "cuit",
+    business_number = "business_number",
     business_name = "business_name",
     sale_point_number = "sale_point_number",
-    iva_condition = "iva_condition",
+    iva_condition_id = "iva_condition_id",
     logo_name = "logo_name",
     activities_start = "activities_start",
     email = "email",
@@ -75,7 +75,18 @@ enum Clients {
     business_name = "business_name",
     fantasie_name = "fantasie_name",
     email = "email",
-    iva_condition = "iva_condition"
+    iva_condition_id = "iva_condition_id"
+}
+
+enum IvaConditions {
+    id = "id",
+    description = "description"
+}
+
+enum InvoiceTypes {
+    id = "id",
+    description = "description",
+    letter = "letter"
 }
 
 export enum EPermissions {
@@ -91,7 +102,9 @@ export enum Tables {
     INVOICES = "invoices",
     INVOICE_ITEMS = "invoice_items",
     SALE_POINTS = "sale_points",
-    CLIENTS = "clients"
+    CLIENTS = "clients",
+    IVA_CONDITIONS = "iva_conditions",
+    INVOICE_TYPES = "invoice_types"
 }
 
 export const Columns = {
@@ -103,5 +116,7 @@ export const Columns = {
     invoices: Invoices,
     invoiceItems: InvoiceItems,
     salePoints: SalePoints,
-    clients: Clients
+    clients: Clients,
+    ivaConditions: IvaConditions,
+    invoiceTypes: InvoiceTypes
 }
