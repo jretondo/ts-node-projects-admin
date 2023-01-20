@@ -30,8 +30,7 @@ const listPagination = (
     Controller.list(
         Number(req.params.page),
         String(req.query.query ? req.query.query : ""),
-        Number(req.query.cantPerPage),
-        Number(req.body.user.id)
+        Number(req.query.cantPerPage)
     )
         .then((list: any) => {
             success({

@@ -98,7 +98,7 @@ export enum Tables {
     AUTH_ADMIN = "auth_admin",
     USER_PERMISSIONS = "admin_permissions",
     PERMISSIONS = "permissions",
-    ACTIVITY = "activity",
+    ACTIVITY = "activities",
     INVOICES = "invoices",
     INVOICE_ITEMS = "invoice_items",
     SALE_POINTS = "sale_points",

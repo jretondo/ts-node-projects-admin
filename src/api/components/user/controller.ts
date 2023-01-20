@@ -1,65 +1,21 @@
 import { INewUser } from '../../../interfaces/IRequests';
-import { IPages, IWhereParams } from 'interfaces/IFunctions';
 import { IAuth, IUser } from 'interfaces/ITables';
-import { EConcatWhere, EModeWhere, ESelectFunctions } from '../../../enums/EFunctionsMysql';
-import { Tables, Columns } from '../../../enums/ETablesDB';
+import { Tables } from '../../../enums/ETablesDB';
 import StoreType from '../../../store/mysql';
-import getPages from '../../../utils/functions/getPages';
 import AuthController from '../auth/index';
+import AdminClass from '../../../models/Admin';
 
 export = (injectedStore: typeof StoreType) => {
     let store = injectedStore;
+    const Admin = new AdminClass
 
-    const list = async (page?: number, item?: string, cantPerPage?: number, idUsu?: number) => {
+    const list = async (page?: number, item?: string, itemsPerPage?: number) => {
 
-        const filters: Array<IWhereParams> | undefined = [];
-        if (item) {
-            const filter: IWhereParams | undefined = {
-                mode: EModeWhere.like,
-                concat: EConcatWhere.or,
-                items: [
-                    { column: Columns.admin.lastname, object: String(item) },
-                    { column: Columns.admin.email, object: String(item) },
-                    { column: Columns.admin.name, object: String(item) },
-                    { column: Columns.admin.user, object: String(item) },
-                    { column: Columns.admin.phone, object: String(item) },
-                ]
-            };
-            filters.push(filter);
-        }
+        const dataAdmin = await Admin.getAdmins(item, page, itemsPerPage)
 
-        if (idUsu) {
-            const filter: IWhereParams | undefined = {
-                mode: EModeWhere.dif,
-                concat: EConcatWhere.and,
-                items: [
-                    { column: Columns.admin.id, object: String(idUsu) }
-                ]
-            };
-            filters.push(filter);
-        }
-
-        let pages: IPages;
-        if (page) {
-            pages = {
-                currentPage: page,
-                cantPerPage: cantPerPage || 10,
-                order: Columns.admin.id,
-                asc: true
-            };
-            const data = await store.list(Tables.ADMIN, [ESelectFunctions.all], filters, undefined, pages);
-            const cant = await store.list(Tables.ADMIN, [`COUNT(${ESelectFunctions.all}) AS COUNT`], filters, undefined, undefined);
-            const pagesObj = await getPages(cant[0].COUNT, 10, Number(page));
-            return {
-                data,
-                pagesObj
-            };
-        } else {
-            const data = await store.list(Tables.ADMIN, [ESelectFunctions.all], filters, undefined, undefined);
-            return {
-                data
-            };
-        }
+        return {
+            data: dataAdmin
+        };
     }
 
     const upsert = async (body: INewUser) => {
@@ -95,8 +51,12 @@ export = (injectedStore: typeof StoreType) => {
             })
     }
 
-    const getUser = async (idUser: number): Promise<Array<IUser>> => {
-        return await store.get(Tables.ADMIN, idUser);
+    const getUser = async (idUser: number) => {
+        return Admin.getAdmin(idUser)
+    }
+
+    const getLast = () => {
+        return Admin.getState()
     }
 
     return {

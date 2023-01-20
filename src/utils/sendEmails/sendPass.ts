@@ -1,9 +1,9 @@
 import path from 'path';
 import ejs from 'ejs';
 import sendEmail from './sendmail';
-import Colors from '../../data/Colors.json';
-import Links from '../../data/Links.json';
-import Names from '../../data/Names.json';
+import Colors from '../../businessData/Colors.json';
+import Links from '../../businessData/Links.json';
+import Names from '../../businessData/Names.json';
 import { IEmailSendPass } from '../../interfaces/IEmails';
 
 export const sendPass = async (

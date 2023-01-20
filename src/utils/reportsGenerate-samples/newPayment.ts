@@ -3,7 +3,7 @@ import path from 'path';
 import { Error } from 'tinify/lib/tinify/Error';
 import ejs from 'ejs';
 import moment from 'moment';
-import { zfill } from '../fillZeros';
+import { zfill } from '../functions/fillZeros';
 import { formatMoney } from '../functions/formatMoney';
 import pdf from 'html-pdf';
 
