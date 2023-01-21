@@ -1,9 +1,14 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
+import { ISalePoints } from '../interfaces/ITables';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
 import IvaCondition from './IvaCondition';
 
-const SalePoint = sequelize.define(ModelsTables.SalePoints.model, {
+type SalePointsTypeCreationAttributes = Optional<ISalePoints, 'id'>;
+
+class SalePoint extends Model<ISalePoints, SalePointsTypeCreationAttributes> { }
+
+SalePoint.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -35,20 +40,21 @@ const SalePoint = sequelize.define(ModelsTables.SalePoints.model, {
         type: DataTypes.STRING(150)
     }
 }, {
-    tableName: ModelsTables.SalePoints.tableName,
+    sequelize,
+    tableName: Tables.SALE_POINTS,
     timestamps: false
 })
 
 SalePoint.hasMany(IvaCondition, {
-    foreignKey: "iva_condition_id",
-    sourceKey: "id",
-    onDelete: "RESTRICT",
-    onUpdate: "CASCADE"
+    foreignKey: Columns.ivaConditions.id,
+    sourceKey: Columns.salePoints.iva_condition_id,
+    onDelete: Restrictions.RESTRICT,
+    onUpdate: Restrictions.CASCADE
 })
 
 IvaCondition.belongsTo(SalePoint, {
-    foreignKey: "iva_condition_id",
-    targetKey: "id"
+    foreignKey: Columns.ivaConditions.id,
+    targetKey: Columns.salePoints.iva_condition_id
 })
 
 export = SalePoint

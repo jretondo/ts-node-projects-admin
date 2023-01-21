@@ -1,8 +1,13 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { IIvaConditions } from '../interfaces/ITables';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
+import { Tables } from '../enums/ETablesDB';
 
-const IvaCondition = sequelize.define(ModelsTables.IvaConditions.model, {
+type IvaConditionTypeCreationAttributes = Optional<IIvaConditions, 'id'>;
+
+class IvaCondition extends Model<IIvaConditions, IvaConditionTypeCreationAttributes> { }
+
+IvaCondition.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: false,
@@ -13,7 +18,8 @@ const IvaCondition = sequelize.define(ModelsTables.IvaConditions.model, {
         type: DataTypes.STRING(100)
     }
 }, {
-    tableName: ModelsTables.IvaConditions.tableName,
+    sequelize,
+    tableName: Tables.IVA_CONDITIONS,
     timestamps: false
 })
 

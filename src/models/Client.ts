@@ -1,26 +1,30 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { Tables, Columns, Restrictions } from './../enums/ETablesDB';
+import { IClients } from './../interfaces/ITables';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
 import IvaCondition from './IvaCondition';
 
-const Client = sequelize.define(ModelsTables.Clients.model, {
+type ClientCreationAttributes = Optional<IClients, 'id'>;
+
+class Client extends Model<IClients, ClientCreationAttributes> { }
+
+Client.init({
     id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        autoIncrement: true
     },
     document_type: {
         type: DataTypes.INTEGER
     },
     document_number: {
-        type: DataTypes.STRING(20)
+        type: DataTypes.STRING
     },
     business_name: {
-        type: DataTypes.STRING(150)
+        type: DataTypes.STRING
     },
     fantasie_name: {
-        type: DataTypes.STRING(100)
+        type: DataTypes.STRING
     },
     email: {
         type: DataTypes.STRING
@@ -28,21 +32,23 @@ const Client = sequelize.define(ModelsTables.Clients.model, {
     iva_condition_id: {
         type: DataTypes.INTEGER
     }
+
 }, {
-    tableName: ModelsTables.Clients.tableName,
+    sequelize,
+    tableName: Tables.CLIENTS,
     timestamps: false
 })
 
 Client.hasMany(IvaCondition, {
-    foreignKey: "iva_condition_id",
-    sourceKey: "id",
-    onDelete: "RESTRICT",
-    onUpdate: "CASCADE"
+    foreignKey: Columns.clients.iva_condition_id,
+    sourceKey: Columns.ivaConditions.id,
+    onDelete: Restrictions.CASCADE,
+    onUpdate: Restrictions.CASCADE
 })
 
 IvaCondition.belongsTo(Client, {
-    foreignKey: "iva_condition_id",
-    targetKey: "id"
+    foreignKey: Columns.clients.iva_condition_id,
+    targetKey: Columns.ivaConditions.id
 })
 
 export = Client

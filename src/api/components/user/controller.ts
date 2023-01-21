@@ -1,21 +1,61 @@
+import { Op } from 'sequelize';
 import { INewUser } from '../../../interfaces/IRequests';
 import { IAuth, IUser } from 'interfaces/ITables';
 import { Tables } from '../../../enums/ETablesDB';
 import StoreType from '../../../store/mysql';
 import AuthController from '../auth/index';
-import AdminClass from '../../../models/Admin';
+import Admin from '../../../models/Admin';
+import Client from '../../../models/Client';
 
 export = (injectedStore: typeof StoreType) => {
     let store = injectedStore;
-    const Admin = new AdminClass
 
     const list = async (page?: number, item?: string, itemsPerPage?: number) => {
 
-        const dataAdmin = await Admin.getAdmins(item, page, itemsPerPage)
+        if (page) {
+            const offset = ((page || 1) - 1) * (itemsPerPage || 10)
 
-        return {
-            data: dataAdmin
-        };
+            const { count, rows } = await Admin.findAndCountAll({
+                where: {
+                    [Op.and]: {
+                        [Op.or]: [
+                            { lastname: item },
+                            { email: item },
+                            { name: item },
+                            { user: item },
+                            { phone: item }
+                        ],
+                        admin: true
+                    }
+                },
+                offset: offset,
+                limit: itemsPerPage || 10
+            })
+
+            return {
+                count: count,
+                itemsPerPage: itemsPerPage || 10,
+                items: rows
+            }
+        } else {
+            const rows = await Admin.findAll({
+                where: {
+                    [Op.or]: [
+                        { lastname: item },
+                        { email: item },
+                        { name: item },
+                        { user: item },
+                        { phone: item }
+                    ]
+                }
+            })
+
+            return {
+                count: 0,
+                itemsPerPage: 0,
+                items: rows
+            }
+        }
     }
 
     const upsert = async (body: INewUser) => {
@@ -25,7 +65,8 @@ export = (injectedStore: typeof StoreType) => {
             lastname: body.lastname,
             email: body.email,
             user: body.userName,
-            phone: body.phone
+            phone: body.phone,
+            admin: false
         }
 
         if (body.id) {
@@ -52,11 +93,8 @@ export = (injectedStore: typeof StoreType) => {
     }
 
     const getUser = async (idUser: number) => {
-        return Admin.getAdmin(idUser)
-    }
 
-    const getLast = () => {
-        return Admin.getState()
+        return await Admin.findByPk(idUser)
     }
 
     return {

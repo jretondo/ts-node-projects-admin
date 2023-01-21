@@ -1,13 +1,16 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
+import { IInvoice } from './../interfaces/ITables';
+import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
 import SalePoint from './SalePoint';
-import InvoiceType from './invoice_types';
-import AdminClass from './Admin';
+import InvoiceType from './InvoiceTypes';
+import Admin from './Admin';
 
-const Admin = new AdminClass
+type InvoiceCreationAttributes = Optional<IInvoice, 'id'>;
 
-const Invoice = sequelize.define(ModelsTables.Invoices.model, {
+class Invoice extends Model<IInvoice, InvoiceCreationAttributes> { }
+
+Invoice.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -35,10 +38,6 @@ const Invoice = sequelize.define(ModelsTables.Invoices.model, {
     },
     client_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: ModelsTables.Clients.model,
-            key: "id"
-        }
     },
     canceled_id: {
         type: DataTypes.INTEGER
@@ -51,44 +50,45 @@ const Invoice = sequelize.define(ModelsTables.Invoices.model, {
         type: DataTypes.TEXT("long")
     }
 }, {
-    tableName: ModelsTables.Invoices.tableName,
+    sequelize,
+    tableName: Tables.INVOICES,
     timestamps: false
 })
 
 Invoice.hasMany(SalePoint, {
-    foreignKey: "sale_point_id",
-    sourceKey: "id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT"
+    foreignKey: Columns.salePoints.id,
+    sourceKey: Columns.invoices.sale_point_id,
+    onDelete: Restrictions.RESTRICT,
+    onUpdate: Restrictions.RESTRICT
 })
 
 SalePoint.belongsTo(Invoice, {
-    foreignKey: "sale_point_id",
-    targetKey: "id"
+    foreignKey: Columns.salePoints.id,
+    targetKey: Columns.invoices.sale_point_id
 })
 
 Invoice.hasMany(InvoiceType, {
-    foreignKey: "type_id",
-    sourceKey: "id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT"
+    foreignKey: Columns.invoiceTypes.id,
+    sourceKey: Columns.invoices.type_id,
+    onDelete: Restrictions.RESTRICT,
+    onUpdate: Restrictions.RESTRICT
 })
 
 InvoiceType.belongsTo(Invoice, {
-    foreignKey: "type_id",
-    targetKey: "id"
+    foreignKey: Columns.invoiceTypes.id,
+    targetKey: Columns.invoices.type_id
 })
 
-Invoice.hasMany(Admin.model(), {
-    foreignKey: "user_id",
-    sourceKey: "id",
-    onDelete: "SET NULL",
-    onUpdate: "CASCADE"
+Invoice.hasMany(Admin, {
+    foreignKey: Columns.admin.id,
+    sourceKey: Columns.invoices.user_id,
+    onDelete: Restrictions.SET_NULL,
+    onUpdate: Restrictions.CASCADE
 })
 
-Admin.model().belongsTo(Invoice, {
-    foreignKey: "user_id",
-    targetKey: "id"
+Admin.belongsTo(Invoice, {
+    foreignKey: Columns.admin.id,
+    targetKey: Columns.invoices.user_id
 })
 
 export = Invoice

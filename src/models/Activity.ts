@@ -1,11 +1,14 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { Columns, Restrictions, Tables } from './../enums/ETablesDB';
+import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
-import AdminClass from './Admin';
+import { IActivity } from '../interfaces/ITables';
+import Admin from './Admin';
 
-const Admin = new AdminClass
+type ActivityCreationAttributes = Optional<IActivity, 'id'>;
 
-const Activity = sequelize.define(ModelsTables.Activities.model, {
+class Activity extends Model<IActivity, ActivityCreationAttributes> { }
+
+Activity.init({
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -25,20 +28,21 @@ const Activity = sequelize.define(ModelsTables.Activities.model, {
         type: DataTypes.TEXT("long")
     }
 }, {
-    tableName: ModelsTables.Activities.tableName,
+    sequelize,
+    tableName: Tables.ACTIVITY,
     timestamps: false
 })
 
-Activity.hasMany(Admin.model(), {
-    foreignKey: "id",
-    sourceKey: "user_id",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE"
+Activity.hasMany(Admin, {
+    foreignKey: Columns.admin.id,
+    sourceKey: Columns.activity.user_id,
+    onDelete: Restrictions.CASCADE,
+    onUpdate: Restrictions.CASCADE
 })
 
-Admin.model().belongsTo(Activity, {
-    foreignKey: "id",
-    targetKey: "user_id"
+Admin.belongsTo(Activity, {
+    foreignKey: Columns.admin.id,
+    targetKey: Columns.activity.user_id
 })
 
 export = Activity

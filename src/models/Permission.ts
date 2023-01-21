@@ -1,8 +1,13 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { IPermission } from '../interfaces/ITables';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
+import { Tables } from '../enums/ETablesDB';
 
-const Permission = sequelize.define(ModelsTables.Permissions.model, {
+type PermissionTypeCreationAttributes = Optional<IPermission, 'id'>;
+
+class Permission extends Model<IPermission, PermissionTypeCreationAttributes> { }
+
+Permission.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -13,7 +18,8 @@ const Permission = sequelize.define(ModelsTables.Permissions.model, {
         type: DataTypes.STRING(200)
     }
 }, {
-    tableName: ModelsTables.Permissions.tableName,
+    sequelize,
+    tableName: Tables.PERMISSIONS,
     timestamps: false
 })
 

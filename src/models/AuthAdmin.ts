@@ -1,11 +1,14 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
+import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
-import AdminClass from './Admin';
+import Admin from './Admin';
+import { IAuth } from '../interfaces/ITables';
 
-const Admin = new AdminClass
+type IAuthCreationAttributes = Optional<IAuth, 'id'>;
 
-const AuthAdmin = sequelize.define(ModelsTables.AuthAdmins.model, {
+class AuthAdmin extends Model<IAuth, IAuthCreationAttributes> { }
+
+AuthAdmin.init({
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -25,20 +28,21 @@ const AuthAdmin = sequelize.define(ModelsTables.AuthAdmins.model, {
         type: DataTypes.INTEGER
     }
 }, {
-    tableName: ModelsTables.AuthAdmins.tableName,
+    sequelize,
+    tableName: Tables.AUTH_ADMIN,
     timestamps: false
 })
 
-AuthAdmin.hasOne(Admin.model(), {
-    foreignKey: "id",
-    sourceKey: "admin_id",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE"
+AuthAdmin.hasOne(Admin, {
+    foreignKey: Columns.admin.id,
+    sourceKey: Columns.authAdmin.admin_id,
+    onDelete: Restrictions.CASCADE,
+    onUpdate: Restrictions.CASCADE
 })
 
-Admin.model().belongsTo(AuthAdmin, {
-    foreignKey: "id",
-    targetKey: "admin_id"
+Admin.belongsTo(AuthAdmin, {
+    foreignKey: Columns.admin.id,
+    targetKey: Columns.authAdmin.admin_id
 })
 
 export = AuthAdmin

@@ -11,12 +11,18 @@ export interface IUser {
     lastname: string
     email: string,
     user: string,
-    phone: string
+    phone: string,
+    admin: boolean
 }
 export interface IUserPermission {
     id?: number,
     id_user: number,
     id_permission: number
+}
+
+export interface IPermission {
+    id?: number,
+    module_name: string
 }
 
 export interface IActivity {
@@ -71,7 +77,7 @@ export interface IClients {
     iva_condition_id: number
 }
 
-export interface IvaConditions {
+export interface IIvaConditions {
     id?: number,
     description: string
 }

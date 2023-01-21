@@ -1,9 +1,15 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { Columns, Restrictions } from './../enums/ETablesDB';
+import { IInvoiceItems } from './../interfaces/ITables';
+import { Tables } from '../enums/ETablesDB';
+import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
 import Invoice from './Invoice';
 
-const InvoiceItem = sequelize.define(ModelsTables.InvoiceItems.model, {
+type InvoiceItemCreationAttributes = Optional<IInvoiceItems, 'id'>;
+
+class InvoiceItem extends Model<IInvoiceItems, InvoiceItemCreationAttributes> { }
+
+InvoiceItem.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -12,10 +18,6 @@ const InvoiceItem = sequelize.define(ModelsTables.InvoiceItems.model, {
     },
     invoice_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: ModelsTables.Invoices.model,
-            key: "id"
-        }
     },
     detail: {
         type: DataTypes.STRING(250)
@@ -30,20 +32,21 @@ const InvoiceItem = sequelize.define(ModelsTables.InvoiceItems.model, {
         type: DataTypes.DOUBLE
     }
 }, {
-    tableName: ModelsTables.InvoiceItems.tableName,
+    sequelize,
+    tableName: Tables.INVOICE_ITEMS,
     timestamps: false
 })
 
 InvoiceItem.hasMany(Invoice, {
-    foreignKey: "invoice_id",
-    sourceKey: "id",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE"
+    foreignKey: Columns.invoices.id,
+    sourceKey: Columns.invoiceItems.invoice_id,
+    onDelete: Restrictions.CASCADE,
+    onUpdate: Restrictions.CASCADE
 })
 
 Invoice.belongsTo(InvoiceItem, {
-    foreignKey: "invoice_id",
-    targetKey: "id"
+    foreignKey: Columns.invoices.id,
+    targetKey: Columns.invoiceItems.invoice_id
 })
 
 export = InvoiceItem

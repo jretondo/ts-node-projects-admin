@@ -107,6 +107,13 @@ export enum Tables {
     INVOICE_TYPES = "invoice_types"
 }
 
+export enum Restrictions {
+    CASCADE = "CASCADE",
+    SET_NULL = "SET NULL",
+    NO_ACTION = "NO ACTION",
+    RESTRICT = "RESTRICT"
+}
+
 export const Columns = {
     admin: AdminCol,
     authAdmin: AuthAdmCol,

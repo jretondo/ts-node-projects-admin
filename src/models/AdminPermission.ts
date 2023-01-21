@@ -1,12 +1,15 @@
-import { ModelsTables } from '../enums/EModels';
-import { DataTypes } from 'sequelize';
+import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
+import { IUserPermission } from './../interfaces/ITables';
+import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
-import AdminClass from './Admin';
+import Admin from './Admin';
 import Permission from './Permission';
 
-const Admin = new AdminClass
+type UserPermissionCreationAttributes = Optional<IUserPermission, 'id'>;
 
-const AdminPermission = sequelize.define(ModelsTables.AdminPermissions.model, {
+class AdminPermission extends Model<IUserPermission, UserPermissionCreationAttributes> { }
+
+AdminPermission.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -20,32 +23,33 @@ const AdminPermission = sequelize.define(ModelsTables.AdminPermissions.model, {
         type: DataTypes.INTEGER
     }
 }, {
-    tableName: ModelsTables.AdminPermissions.tableName,
+    sequelize,
+    tableName: Tables.USER_PERMISSIONS,
     timestamps: false
 })
 
-AdminPermission.hasMany(Admin.model(), {
-    foreignKey: "id_user",
-    sourceKey: "id",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE"
+AdminPermission.hasMany(Admin, {
+    foreignKey: Columns.userPermissions.id_permission,
+    sourceKey: Columns.admin.id,
+    onDelete: Restrictions.CASCADE,
+    onUpdate: Restrictions.CASCADE
 })
 
-Admin.model().belongsTo(AdminPermission, {
-    foreignKey: "id_user",
-    targetKey: "id"
+Admin.belongsTo(AdminPermission, {
+    foreignKey: Columns.userPermissions.id_permission,
+    targetKey: Columns.admin.id
 })
 
 AdminPermission.hasMany(Permission, {
-    foreignKey: "id_permission",
-    sourceKey: "id",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE"
+    foreignKey: Columns.userPermissions.id_permission,
+    sourceKey: Columns.permissions.id,
+    onDelete: Restrictions.CASCADE,
+    onUpdate: Restrictions.CASCADE
 })
 
 Permission.belongsTo(AdminPermission, {
-    foreignKey: "id_permission",
-    targetKey: "id"
+    foreignKey: Columns.userPermissions.id_permission,
+    targetKey: Columns.permissions.id
 })
 
 export = AdminPermission
