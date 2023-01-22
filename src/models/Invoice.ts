@@ -1,5 +1,5 @@
-import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
-import { IInvoice } from './../interfaces/ITables';
+import { Columns, Tables, Restrictions } from '../constant/TABLES';
+import { IInvoice } from '../interfaces/Tables';
 import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
 import SalePoint from './SalePoint';
@@ -90,5 +90,7 @@ Admin.belongsTo(Invoice, {
     foreignKey: Columns.admin.id,
     targetKey: Columns.invoices.user_id
 })
+
+Invoice.sync({ force: false })
 
 export = Invoice

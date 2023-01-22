@@ -1,6 +1,6 @@
-import { Columns, Restrictions } from './../enums/ETablesDB';
-import { IInvoiceItems } from './../interfaces/ITables';
-import { Tables } from '../enums/ETablesDB';
+import { Columns, Restrictions } from '../constant/TABLES';
+import { IInvoiceItems } from '../interfaces/Tables';
+import { Tables } from '../constant/TABLES';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
 import Invoice from './Invoice';
@@ -48,5 +48,7 @@ Invoice.belongsTo(InvoiceItem, {
     foreignKey: Columns.invoices.id,
     targetKey: Columns.invoiceItems.invoice_id
 })
+
+InvoiceItem.sync({ force: false })
 
 export = InvoiceItem

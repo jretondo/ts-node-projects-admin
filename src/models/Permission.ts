@@ -1,7 +1,7 @@
-import { IPermission } from '../interfaces/ITables';
+import { IPermission } from '../interfaces/Tables';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
-import { Tables } from '../enums/ETablesDB';
+import { Tables } from '../constant/TABLES';
 
 type PermissionTypeCreationAttributes = Optional<IPermission, 'id'>;
 
@@ -22,5 +22,7 @@ Permission.init({
     tableName: Tables.PERMISSIONS,
     timestamps: false
 })
+
+Permission.sync({ force: false })
 
 export = Permission

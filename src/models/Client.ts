@@ -1,5 +1,5 @@
-import { Tables, Columns, Restrictions } from './../enums/ETablesDB';
-import { IClients } from './../interfaces/ITables';
+import { Tables, Columns, Restrictions } from '../constant/TABLES';
+import { IClients } from '../interfaces/Tables';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
 import IvaCondition from './IvaCondition';
@@ -50,5 +50,7 @@ IvaCondition.belongsTo(Client, {
     foreignKey: Columns.clients.iva_condition_id,
     targetKey: Columns.ivaConditions.id
 })
+
+Client.sync({ force: false })
 
 export = Client

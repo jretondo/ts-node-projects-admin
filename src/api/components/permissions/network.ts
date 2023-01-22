@@ -1,4 +1,4 @@
-import { EPermissions } from '../../../enums/ETablesDB';
+import { EPermissions } from '../../../constant/TABLES';
 import { NextFunction, Request, Response, Router } from 'express';
 import { success } from '../../../network/response';
 import Controller from './index';

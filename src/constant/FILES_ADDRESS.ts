@@ -1,6 +1,6 @@
 import path from 'path';
 
-export const staticFolders = {
+export const FILES_ADDRESS = {
     certAfip: path.join(__dirname, "..", "..", "public", "afip", "certs"),
     tokenAfip: path.join(__dirname, "..", "..", "public", "afip", "token"),
     css: path.join(__dirname, "..", "..", "public", "css"),

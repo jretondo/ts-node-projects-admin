@@ -1,75 +1,49 @@
-import { INewPermissions } from '../../../interfaces/IRequests';
-import { IJoinMysql, IWhereParams } from 'interfaces/IFunctions';
-import { EModeWhere, EConcatWhere, ESelectFunctions } from '../../../enums/EFunctionsMysql';
-import { Tables, Columns } from '../../../enums/ETablesDB';
-import StoreType from '../../../store/mysql';
+import { Op } from 'sequelize';
+import { INewPermissions } from '../../../interfaces/Others';
+import AdminPermission from '../../../models/AdminPermission';
+import { IUserPermission } from '../../../interfaces/Tables';
+import Permission from '../../../models/Permission';
 
-export = (injectedStore: typeof StoreType) => {
-    let store = injectedStore;
-
+export = () => {
     const upsert = async (body: INewPermissions) => {
         if (body.permissions.length > 0) {
-            await store.remove(Tables.USER_PERMISSIONS, { id_user: body.idUser })
+            await AdminPermission.destroy({ where: { id_user: body.idUser } })
 
-            const headers = [Columns.userPermissions.id_permission, Columns.userPermissions.id_user]
-
-            const permissions: Promise<Array<Array<number>>> = new Promise((resolve, reject) => {
-                let prov: Array<any> = [];
-                body.permissions.map((item, key) => {
-                    prov.push([item.idPermission, body.idUser]);
-                    if (key === body.permissions.length - 1) {
-                        resolve(prov);
+            const permissions: Array<IUserPermission> =
+                body.permissions.map((item) => {
+                    return {
+                        id_permission: item.idPermission,
+                        id_user: body.idUser
                     }
                 })
-            });
 
-            return await store.mInsert(Tables.USER_PERMISSIONS, { headers: headers, rows: await permissions });
+            return await AdminPermission.bulkCreate(permissions);
         } else {
-            return await store.remove(Tables.USER_PERMISSIONS, { id_user: body.idUser })
+            await AdminPermission.destroy({ where: { id_user: body.idUser } })
         }
     }
 
     const getPermission = async (idUser: number, idPermission: number) => {
-        let filters: Array<IWhereParams> | undefined = []
-        const filter: IWhereParams = {
-            mode: EModeWhere.strict,
-            concat: EConcatWhere.and,
-            items: [
-                {
-                    column: Columns.userPermissions.id_user,
-                    object: String(idUser)
-                },
-                {
-                    column: Columns.userPermissions.id_permission, object: String(idPermission)
-                }
-            ]
-        }
-        filters.push(filter);
-        return await store.list(Tables.USER_PERMISSIONS, [ESelectFunctions.all], filters, undefined, undefined);
+        return await AdminPermission.findAll({
+            where: {
+                [Op.and]:
+                    [
+                        { id_permission: idPermission },
+                        { id_user: idUser }
+                    ]
+            }
+        })
     }
 
     const get2 = async (idUser: number) => {
-        const join: IJoinMysql = {
-            tableJoin: Tables.PERMISSIONS,
-            columnOrigin: Columns.userPermissions.id_permission,
-            columnJoin: Columns.permissions.id
-        }
-        let filters: Array<IWhereParams> | undefined = []
-        const filter: IWhereParams = {
-            mode: EModeWhere.dif,
-            concat: EConcatWhere.and,
-            items: [
-                {
-                    column: Columns.permissions.id,
-                    object: String(8)
-                }
-            ]
-        }
-        filters.push(filter);
-        const allPermissions = await store.list(Tables.PERMISSIONS, ["*"], filters, undefined, undefined, undefined);
+        const allPermissions = await Permission.findAll();
 
-        const userPermissions = await store.query(Tables.USER_PERMISSIONS, { id_user: idUser }, join, [Columns.userPermissions.id_permission]);
-
+        const userPermissions = await AdminPermission.findAll({
+            where: {
+                id_user: idUser
+            },
+            include: Permission
+        });
 
         const permissions: Array<any> = await new Promise((resolve, reject) => {
             const list: Array<any> = [];
@@ -92,11 +66,11 @@ export = (injectedStore: typeof StoreType) => {
     }
 
     const get = async (idUser: number) => {
-        return await store.query(Tables.USER_PERMISSIONS, { id_user: idUser }, undefined, [Columns.userPermissions.id_permission]);
+        return await AdminPermission.findAll({ where: { id_user: idUser } });
     }
 
     const getPermissions = async () => {
-        return await store.list(Tables.PERMISSIONS, ["*"], undefined, undefined, undefined, undefined)
+        return await Permission.findAll()
     }
 
     return {

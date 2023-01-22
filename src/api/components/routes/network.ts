@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { success } from '../../../network/response';
 import secure from '../../../auth/secure';
-import { EPermissions } from '../../../enums/ETablesDB';
+import { EPermissions } from '../../../constant/TABLES';
 const router = Router();
 
 const responseSuccess = (req: Request, res: Response, next: NextFunction) => {

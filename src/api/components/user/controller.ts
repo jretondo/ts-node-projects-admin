@@ -1,99 +1,87 @@
+import { IListResponse } from './../../../interfaces/Others';
 import { Op } from 'sequelize';
-import { INewUser } from '../../../interfaces/IRequests';
-import { IAuth, IUser } from 'interfaces/ITables';
-import { Tables } from '../../../enums/ETablesDB';
-import StoreType from '../../../store/mysql';
+import { IAuth, IUser } from 'interfaces/Tables';;
 import AuthController from '../auth/index';
 import Admin from '../../../models/Admin';
-import Client from '../../../models/Client';
 
-export = (injectedStore: typeof StoreType) => {
-    let store = injectedStore;
-
-    const list = async (page?: number, item?: string, itemsPerPage?: number) => {
-
+export = () => {
+    const list = async (page?: number, item?: string, itemsPerPage?: number): Promise<IListResponse> => {
         if (page) {
             const offset = ((page || 1) - 1) * (itemsPerPage || 10)
-
             const { count, rows } = await Admin.findAndCountAll({
                 where: {
-                    [Op.and]: {
+                    [Op.and]: item ? {
                         [Op.or]: [
-                            { lastname: item },
-                            { email: item },
-                            { name: item },
-                            { user: item },
-                            { phone: item }
-                        ],
-                        admin: true
-                    }
+                            { lastname: { [Op.substring]: item } },
+                            { email: { [Op.substring]: item } },
+                            { name: { [Op.substring]: item } },
+                            { user: { [Op.substring]: item } },
+                            { phone: { [Op.substring]: item } }
+                        ]
+                    } : {},
+                    admin: false
                 },
                 offset: offset,
                 limit: itemsPerPage || 10
             })
-
             return {
-                count: count,
+                totalItems: count,
                 itemsPerPage: itemsPerPage || 10,
                 items: rows
             }
         } else {
             const rows = await Admin.findAll({
                 where: {
-                    [Op.or]: [
-                        { lastname: item },
-                        { email: item },
-                        { name: item },
-                        { user: item },
-                        { phone: item }
-                    ]
+                    [Op.and]: item ? {
+                        [Op.or]: [
+                            { lastname: { [Op.substring]: item } },
+                            { email: { [Op.substring]: item } },
+                            { name: { [Op.substring]: item } },
+                            { user: { [Op.substring]: item } },
+                            { phone: { [Op.substring]: item } }
+                        ]
+                    } : {},
+                    admin: false
                 }
             })
-
             return {
-                count: 0,
+                totalItems: 0,
                 itemsPerPage: 0,
                 items: rows
             }
         }
     }
 
-    const upsert = async (body: INewUser) => {
-
+    const upsert = async (body: IUser) => {
         const user: IUser = {
             name: body.name,
             lastname: body.lastname,
             email: body.email,
-            user: body.userName,
+            user: body.user,
             phone: body.phone,
             admin: false
         }
 
         if (body.id) {
-            return await store.update(Tables.ADMIN, user, body.id);
+            return await Admin.update(user, { where: { id: body.id } });
         } else {
-            const result = await store.insert(Tables.ADMIN, user);
+            const result = await Admin.create(user)
+
             const newAuth: IAuth = {
-                id: result.insertId,
+                id: result.dataValues.id,
                 user: user.user,
                 prov: 1,
-                admin_id: result.insertId
+                admin_id: result.dataValues.id || 0
             }
             return await AuthController.upsert(newAuth, body.email);
         }
     }
 
     const remove = async (idUser: number) => {
-        await store.remove(Tables.ADMIN, { id: idUser })
-            .then(async (result: any) => {
-                if (result.affectedRows === 0) {
-                    throw new Error();
-                }
-            })
+        return await Admin.destroy({ where: { id: idUser } })
     }
 
     const getUser = async (idUser: number) => {
-
         return await Admin.findByPk(idUser)
     }
 

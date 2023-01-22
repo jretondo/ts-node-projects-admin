@@ -1,5 +1,5 @@
-import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
-import { ISalePoints } from '../interfaces/ITables';
+import { Columns, Tables, Restrictions } from '../constant/TABLES';
+import { ISalePoints } from '../interfaces/Tables';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
 import IvaCondition from './IvaCondition';
@@ -56,5 +56,7 @@ IvaCondition.belongsTo(SalePoint, {
     foreignKey: Columns.ivaConditions.id,
     targetKey: Columns.salePoints.iva_condition_id
 })
+
+SalePoint.sync({ force: false })
 
 export = SalePoint

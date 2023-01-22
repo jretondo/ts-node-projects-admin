@@ -1,7 +1,7 @@
-import { IInvoiceTypes } from './../interfaces/ITables';
+import { IInvoiceTypes } from '../interfaces/Tables';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
-import { Tables } from '../enums/ETablesDB';
+import { Tables } from '../constant/TABLES';
 
 type InvoiceTypeCreationAttributes = Optional<IInvoiceTypes, 'id'>;
 
@@ -25,5 +25,7 @@ InvoiceType.init({
     tableName: Tables.INVOICE_TYPES,
     timestamps: false
 })
+
+InvoiceType.sync({ force: false })
 
 export = InvoiceType

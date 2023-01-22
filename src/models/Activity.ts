@@ -1,7 +1,7 @@
-import { Columns, Restrictions, Tables } from './../enums/ETablesDB';
+import { Columns, Restrictions, Tables } from '../constant/TABLES';
 import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
-import { IActivity } from '../interfaces/ITables';
+import { IActivity } from '../interfaces/Tables';
 import Admin from './Admin';
 
 type ActivityCreationAttributes = Optional<IActivity, 'id'>;
@@ -44,5 +44,7 @@ Admin.belongsTo(Activity, {
     foreignKey: Columns.admin.id,
     targetKey: Columns.activity.user_id
 })
+
+Activity.sync({ force: false })
 
 export = Activity

@@ -1,5 +1,5 @@
-import { Tables } from '../enums/ETablesDB';
-import { IUser } from '../interfaces/ITables';
+import { Tables } from '../constant/TABLES';
+import { IUser } from '../interfaces/Tables';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
 
@@ -40,5 +40,5 @@ Admin.init({
     timestamps: false
 })
 
-
+Admin.sync({ force: false })
 export = Admin

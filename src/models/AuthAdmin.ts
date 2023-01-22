@@ -1,8 +1,8 @@
-import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
+import { Columns, Tables, Restrictions } from '../constant/TABLES';
 import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
 import Admin from './Admin';
-import { IAuth } from '../interfaces/ITables';
+import { IAuth } from '../interfaces/Tables';
 
 type IAuthCreationAttributes = Optional<IAuth, 'id'>;
 
@@ -44,5 +44,7 @@ Admin.belongsTo(AuthAdmin, {
     foreignKey: Columns.admin.id,
     targetKey: Columns.authAdmin.admin_id
 })
+
+AuthAdmin.sync({ force: false })
 
 export = AuthAdmin

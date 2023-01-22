@@ -1,8 +1,9 @@
-import { EPermissions } from '../../../enums/ETablesDB';
+import { EPermissions } from '../../../constant/TABLES';
 import { NextFunction, Request, Response, Router } from 'express';
 import { success } from '../../../network/response';
 import Controller from './index';
 import secure from '../../../auth/secure';
+import moment from 'moment';
 const router = Router();
 
 //internal Functions
@@ -11,8 +12,8 @@ const upsert = (
     res: Response,
     next: NextFunction
 ) => {
-    Controller.upsert(req.body.user, req.body.activityDescr).then(resp => {
-        success({ req, res, message: resp })
+    Controller.upsert(req.body.user, req.body.activityDescription).then(response => {
+        success({ req, res, message: response })
     }).catch(next)
 }
 

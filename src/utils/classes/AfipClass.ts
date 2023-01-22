@@ -1,6 +1,6 @@
 //Se importa el módulo jretondo-afip-ws 
 import Afip from 'ts-afip-ws';
-import { staticFolders } from '../../enums/EStaticFiles';
+import { FILES_ADDRESS } from '../../constant/FILES_ADDRESS';
 
 enum resStatus {
     ok = 200,
@@ -19,10 +19,10 @@ export class AfipClass {
     ) {
         this.afip = new Afip({
             CUIT: this.CUIT,
-            res_folder: staticFolders.certAfip,
+            res_folder: FILES_ADDRESS.certAfip,
             cert: this.cert,
             key: this.key,
-            ta_folder: staticFolders.tokenAfip,
+            ta_folder: FILES_ADDRESS.tokenAfip,
             production: this.production
         })
     }

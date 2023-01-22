@@ -1,5 +1,5 @@
-import { Columns, Tables, Restrictions } from './../enums/ETablesDB';
-import { IUserPermission } from './../interfaces/ITables';
+import { Columns, Tables, Restrictions } from '../constant/TABLES';
+import { IUserPermission } from '../interfaces/Tables';
 import { DataTypes, Optional, Model } from 'sequelize';
 import sequelize from '../database';
 import Admin from './Admin';
@@ -29,27 +29,29 @@ AdminPermission.init({
 })
 
 AdminPermission.hasMany(Admin, {
-    foreignKey: Columns.userPermissions.id_permission,
-    sourceKey: Columns.admin.id,
+    foreignKey: Columns.admin.id,
+    sourceKey: Columns.userPermissions.id_permission,
     onDelete: Restrictions.CASCADE,
     onUpdate: Restrictions.CASCADE
 })
 
 Admin.belongsTo(AdminPermission, {
-    foreignKey: Columns.userPermissions.id_permission,
-    targetKey: Columns.admin.id
+    foreignKey: Columns.admin.id,
+    targetKey: Columns.userPermissions.id_permission
 })
 
 AdminPermission.hasMany(Permission, {
-    foreignKey: Columns.userPermissions.id_permission,
-    sourceKey: Columns.permissions.id,
+    foreignKey: Columns.permissions.id,
+    sourceKey: Columns.userPermissions.id_permission,
     onDelete: Restrictions.CASCADE,
     onUpdate: Restrictions.CASCADE
 })
 
 Permission.belongsTo(AdminPermission, {
-    foreignKey: Columns.userPermissions.id_permission,
-    targetKey: Columns.permissions.id
+    foreignKey: Columns.permissions.id,
+    targetKey: Columns.userPermissions.id_permission
 })
+
+AdminPermission.sync({ force: false })
 
 export = AdminPermission

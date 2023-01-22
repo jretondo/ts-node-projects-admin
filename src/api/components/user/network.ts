@@ -1,4 +1,4 @@
-import { EPermissions } from '../../../enums/ETablesDB';
+import { EPermissions } from '../../../constant/TABLES';
 import { Router, NextFunction, Response, Request } from 'express';
 import { success } from '../../../network/response';
 const router = Router();

@@ -1,7 +1,7 @@
-import { IIvaConditions } from '../interfaces/ITables';
+import { IIvaConditions } from '../interfaces/Tables';
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../database';
-import { Tables } from '../enums/ETablesDB';
+import { Tables } from '../constant/TABLES';
 
 type IvaConditionTypeCreationAttributes = Optional<IIvaConditions, 'id'>;
 
@@ -22,5 +22,7 @@ IvaCondition.init({
     tableName: Tables.IVA_CONDITIONS,
     timestamps: false
 })
+
+IvaCondition.sync({ force: false })
 
 export = IvaCondition
