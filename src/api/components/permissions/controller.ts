@@ -69,15 +69,10 @@ export = () => {
         return await AdminPermission.findAll({ where: { id_user: idUser } });
     }
 
-    const getPermissions = async () => {
-        return await Permission.findAll()
-    }
-
     return {
         upsert,
         getPermission,
         get,
         get2,
-        getPermissions
     };
 }

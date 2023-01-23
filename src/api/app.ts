@@ -17,6 +17,7 @@ import permissions from './components/permissions/network';
 import user from './components/user/network';
 import routes from './components/routes/network';
 import activity from './components/activity/network';
+import clients from './components/clients/network';
 import views from './components/views/network';
 import { config } from '../config';
 export class App {
@@ -53,6 +54,7 @@ export class App {
         this.app.use("/api/routes", routes)
         this.app.use("/api/activity", activity)
         this.app.use("/api/views", views)
+        this.app.use("/api/clients", clients)
         this.app.use(errorThrow);
     }
 

@@ -90,7 +90,11 @@ enum InvoiceTypes {
 }
 
 export enum EPermissions {
-    userAdmin = 1
+    userAdmin = 1,
+    clients,
+    invoices,
+    ssl,
+    projects
 }
 
 export enum Tables {

@@ -36,21 +36,10 @@ const getOther = (
     }).catch(next)
 }
 
-const getPermissions = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    Controller.getPermissions().then((permissions: any) => {
-        success({ req, res, message: permissions })
-    }).catch(next)
-}
-
 //Routes
 router
     .post("/", secure(EPermissions.userAdmin), upsert)
     .put("/", secure(EPermissions.userAdmin), upsert)
-    .get("/list", secure(EPermissions.userAdmin), getPermissions)
     .get("/:id", secure(EPermissions.userAdmin), getOther)
     .get("/", secure(), get);
 
