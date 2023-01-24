@@ -1,6 +1,7 @@
 import { IClients } from './../../../interfaces/Tables';
 import Client from '../../../models/Client';
 import { Op } from 'sequelize';
+import IvaCondition from '../../../models/IvaCondition';
 
 export = () => {
     const upsert = async (client: IClients) => {
@@ -24,6 +25,7 @@ export = () => {
                     { email: { [Op.substring]: text } }
                 ]
             },
+            include: IvaCondition,
             offset: offset,
             limit: ITEMS_PER_PAGE
         });
@@ -34,8 +36,13 @@ export = () => {
         }
     }
 
+    const remove = async (idClient: number) => {
+        return await Client.destroy({ where: { id: idClient } })
+    }
+
     return {
         upsert,
-        list
+        list,
+        remove
     };
 }

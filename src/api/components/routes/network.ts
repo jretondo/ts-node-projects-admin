@@ -13,5 +13,7 @@ router
     .get("/dashboard", secure(), responseSuccess)
     .get("/changePass", secure(), responseSuccess)
     .get("/userAdmin", secure(EPermissions.userAdmin), responseSuccess)
+    .get("/clients", secure(EPermissions.clients), responseSuccess)
+    .get("/invoices", secure(EPermissions.invoices), responseSuccess)
 
 export = router;

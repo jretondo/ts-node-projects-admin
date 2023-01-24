@@ -40,15 +40,15 @@ Client.init({
 })
 
 Client.hasMany(IvaCondition, {
-    foreignKey: Columns.clients.iva_condition_id,
-    sourceKey: Columns.ivaConditions.id,
+    foreignKey: Columns.ivaConditions.id,
+    sourceKey: Columns.clients.iva_condition_id,
     onDelete: Restrictions.CASCADE,
     onUpdate: Restrictions.CASCADE
 })
 
 IvaCondition.belongsTo(Client, {
-    foreignKey: Columns.clients.iva_condition_id,
-    targetKey: Columns.ivaConditions.id
+    foreignKey: Columns.ivaConditions.id,
+    targetKey: Columns.clients.iva_condition_id
 })
 
 Client.sync({ force: false })
